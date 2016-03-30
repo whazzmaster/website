@@ -164,8 +164,8 @@ defmodule MyApp.Router do
   scope "/api" do
     pipe_through :graphql
 
-    forward "/api", Absinthe.Plug,
-      schema: Fractalsense.Web.Schema
+    forward "/", Absinthe.Plug,
+      schema: MyApp.Schema
   end
 end
 ```
