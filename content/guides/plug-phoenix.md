@@ -10,7 +10,7 @@ eg, [Poison](https://hex.pm/packages/poison):
 # filename: mix.exs
 def deps do
   [
-    {:absinthe_plug, "~> 1.0.0"},
+    {:absinthe_plug, "~> 1.1"},
     {:poison, "~> 2.1.0"},
   ]
 end

@@ -27,7 +27,7 @@ mutation do
     arg :body, non_null(:string)
     arg :posted_at, non_null(:string)
 
-    resolve &Resolver.Post.create/2
+    resolve &PostResolver.create/2
   end
 end
 ```
@@ -36,7 +36,7 @@ The resolver in this case is responsible for making any changes and returning
 an `{:ok, post}` tuple matching the `:post` type we defined earlier:
 
 ```elixir
-# filename: web/resolver/post.ex
+# filename: web/resolvers/post_resolver.ex
 def create(args, _info) do
   %Post{}
   |> Post.changeset(args)

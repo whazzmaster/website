@@ -57,11 +57,9 @@ defmodule Blog.Schema do
   use Absinthe.Schema
   import_types Blog.Schema.Types
 
-  alias Blog.Resolver
-
   query do
     field :posts, list_of(:post) do
-      resolve &Resolver.Post.all/2
+      resolve &PostResolver.all/2
     end
   end
 
@@ -69,8 +67,8 @@ end
 ```
 
 ```elixir
-# filename: web/resolver/post.ex
-defmodule Blog.Resolver.Post do
+# filename: web/resolvers/post_resolver.ex
+defmodule Blog.PostResolver do
   def all(_args, _info) do
     {:ok, Blog.Repo.all(Post)}
   end
@@ -79,7 +77,7 @@ end
 
 Queries are defined as fields inside the GraphQL object returned by
 our `query` function. We created a posts query that has a type
-`list_of(:post)` and is resolved by our `Blog.Resolver.Post.all/2`
+`list_of(:post)` and is resolved by our `Blog.PostResolver.all/2`
 function. Later we'll get into what the arguments to resolver
 functions are; don't worry about it for now. The resolver function can
 be anything you like that takes the requisite 2 arguments.
