@@ -56,7 +56,7 @@ mutation do
     arg :title, non_null(:string)
     arg :body, non_null(:string)
     arg :posted_at, non_null(:time)
-    resolve &Resolver.Post.create/2
+    resolve &PostResolver.create/2
   end
 end
 ```

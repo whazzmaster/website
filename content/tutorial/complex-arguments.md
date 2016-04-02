@@ -71,7 +71,7 @@ mutation do
     arg :contact, non_null(:contact_input)
     arg :password, :string
 
-    resolve &Resolver.User.create/2
+    resolve &Blog.PostResolver.create/2
   end
 
 end
@@ -86,7 +86,7 @@ in your underlying data store and how things are presented by your GraphQL api.
 Our resolver might look something like this:
 
 ```elixir
-# filename: web/resolver/post.ex
+# filename: web/resolvers/post_resolver.ex
 def create(params, _info) do
   {contact_params, user_params} = Map.pop(params, :contact)
 
