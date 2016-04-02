@@ -27,7 +27,7 @@ mutation do
     arg :body, non_null(:string)
     arg :posted_at, non_null(:string)
 
-    resolve &PostResolver.create/2
+    resolve &Blog.PostResolver.create/2
   end
 end
 ```

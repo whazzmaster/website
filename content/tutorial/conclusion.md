@@ -1,6 +1,6 @@
 ---
 title: Conclusion
-order: 9
+order: 8
 ---
 
 With this we have a basic GraphQL based API for a blog. Head on over to [the github page](https://github.com/absinthe-graphql/absinthe_example) if you want the final code.
