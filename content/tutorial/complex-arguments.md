@@ -18,8 +18,8 @@ mutation CreateEmailUser {
 
 ```graphql
 #description "User with phone number"
-mutation CreateEmailUser {
-  user(contact: {type: "phone", value: "foo@bar.com"}, password: "hunter2")
+mutation CreatePhoneUser {
+  user(contact: {type: "phone", value: "867-5309"}, password: "hunter2")
 }
 ```
 
