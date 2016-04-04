@@ -130,7 +130,7 @@ This can be trivially reserved to just the `:dev` elixir environment by doing:
 
 ```elixir
 # filename: router.ex
-if Mix.env == :dev
+if Mix.env == :dev do
   get "/graphiql", Absinthe.Plug.GraphiQL, schema: MyApp.Schema
 end
 ```
