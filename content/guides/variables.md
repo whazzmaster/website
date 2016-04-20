@@ -25,7 +25,7 @@ query GetItem($id: ID!) {
   }
 }
 """
-|> Absinthe.run(MyApp.Schema, variables: %{id: "bar"})
+|> Absinthe.run(MyApp.Schema, variables: %{"id" => "bar"})
 
 # Result
 {:ok, %{data: %{"item" => %{"name" => "Bar"}}}}
