@@ -68,4 +68,4 @@ you'll be writing Elixir, not JavaScript!
 
 ## Specification
 
-The current version of the specification is the [October 2015 Working Draft](https://facebook.github.io/graphql/).
+The current version of the specification is the [April 2016 Working Draft](https://facebook.github.io/graphql/).
