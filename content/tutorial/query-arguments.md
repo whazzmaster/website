@@ -61,7 +61,7 @@ return values. This powers a number of very helpful features. To see
 them at work, let's look at our resolver.
 
 ```elixir
-# filename: web/resolvers/user_resolver.ex
+# filename: web/resolvers/post_resolver.ex
 defmodule Blog.PostResolver do
   def find(%{id: id}, _info) do
     case Blog.Repo.get(User, id) do
