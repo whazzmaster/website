@@ -12,14 +12,14 @@ We want to support the following mutations.
 ```graphql
 #description "User with email"
 mutation CreateEmailUser {
-  user(contact: {type: "email", value: "foo@bar.com"}, password: "hunter2")
+  user(contact: {type: EMAIL, value: "foo@bar.com"}, password: "hunter2")
 }
 ```
 
 ```graphql
 #description "User with phone number"
 mutation CreatePhoneUser {
-  user(contact: {type: "phone", value: "867-5309"}, password: "hunter2")
+  user(contact: {type: PHONE, value: "867-5309"}, password: "hunter2")
 }
 ```
 
@@ -36,7 +36,8 @@ Let's start with our contact_type Enum.
 ```graphql
 # filename: web/schema/types.ex
 enum :contact_type do
-  values ~w(phone email)a
+  value :phone
+  value :email
 end
 ```
 
