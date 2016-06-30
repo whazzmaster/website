@@ -8,7 +8,7 @@ Before you start, it's a good idea to have some background into [GraphQL in gene
 ## The Example
 
 We'll be building a very basic GraphQL API for a blog, written in Elixir using
-Absinthe. The tutorial expects you to have a properly setup [Phoenix based blog](http://www.phoenixframework.org/).
+Absinthe. The tutorial expects you to have a properly setup [Phoenix application](http://www.phoenixframework.org/docs/up-and-running).
 
 <p class="notice">
   If you'd like to cheat, you can find the finished code for the tutorial
