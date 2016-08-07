@@ -51,7 +51,7 @@ query do
   @desc "Get a user of the blog"
   field :user, type: :user do
     arg :id, non_null(:id)
-    resolve &Blog.PostResolver.find/2
+    resolve &Blog.UserResolver.find/2
   end
 end
 ```
@@ -61,8 +61,8 @@ return values. This powers a number of very helpful features. To see
 them at work, let's look at our resolver.
 
 ```elixir
-# filename: web/resolvers/post_resolver.ex
-defmodule Blog.PostResolver do
+# filename: web/resolvers/user_resolver.ex
+defmodule Blog.UserResolver do
   def find(%{id: id}, _info) do
     case Blog.Repo.get(User, id) do
       nil  -> {:error, "User id #{id} not found"}
