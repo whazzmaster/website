@@ -17,7 +17,7 @@ the query we want to support:
 ```
 
 This query includes arguments, which are the key value pairs contained
-within the parenthesis. To support this, we'll create first create a
+within the parenthesis. To support this, we'll first create a
 user type, and then create a query in our schema that takes an id
 argument.
 
