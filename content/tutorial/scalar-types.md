@@ -1,6 +1,6 @@
 ---
 title: Scalar Types
-order: 6
+order: 5
 ---
 
 It would be nice if our blog posts had a `posted_at` time. This would
@@ -31,7 +31,7 @@ Let's define our time type:
 # filename: web/schema/types.ex
 
 scalar :time, description: "ISOz time" do
-  parse &Timex.DateFormat.parse(&1, "{ISOz}")
+  parse &Timex.DateFormat.parse(&1.value, "{ISOz}")
   serialize &Timex.DateFormat.format!(&1, "{ISOz}")
 end
 ```
