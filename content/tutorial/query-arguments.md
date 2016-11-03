@@ -1,6 +1,6 @@
 ---
 title: Query Arguments
-order: 4
+order: 3
 ---
 
 Our blog needs users, and the ability to look up users by id. Here's

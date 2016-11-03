@@ -1,6 +1,6 @@
 ---
 title: Mutations
-order: 5
+order: 4
 ---
 
 A blog is no good without new content. We want to support a mutation

@@ -123,7 +123,7 @@ router, simply do
 
 ```elixir
 # filename: router.ex
-get "/graphiql", Absinthe.Plug.GraphiQL, schema: MyApp.Schema
+forward "/graphiql", Absinthe.Plug.GraphiQL, schema: MyApp.Schema
 ```
 
 This can be trivially reserved to just the `:dev` elixir environment by doing:
@@ -131,7 +131,7 @@ This can be trivially reserved to just the `:dev` elixir environment by doing:
 ```elixir
 # filename: router.ex
 if Mix.env == :dev do
-  get "/graphiql", Absinthe.Plug.GraphiQL, schema: MyApp.Schema
+  forward "/graphiql", Absinthe.Plug.GraphiQL, schema: MyApp.Schema
 end
 ```
 

@@ -12,15 +12,14 @@ we can point out now that might be helpful.
 In general, you want to make sure that when accessing Ecto associations that you
 preload the data in the top level resolver functions to avoid N+1 queries.
 
-Imagine this scenario: You have posts and categories. Categories can have a
-parent category. You want to list all categories, and if they have a parent,
-include that along with its name.
+Imagine this scenario: You have posts and users. A Post has an author field, which
+returns a user. You want to list all posts, and get the name of their author
 
 ```graphql
 # description: A deceptively simple query.
 {
-  categories {
-    parent {
+  posts {
+    author {
       name
     }
   }
@@ -31,20 +30,24 @@ If you write your schema like this, you're going to have a _bad_ time:
 
 ```elixir
 # description: A naive approach, subject to N+1 issues.
-object :category do
-  @desc "Parent category to the existing category"
-  field :parent, :category do
-    resolve fn _, %{source: category} ->
-      # exact mechanism unimportant
-      query_parent(category)
+object :post do
+  @desc "Author of the post"
+  field :author, :user do
+    resolve fn post, _, _ ->
+      author =
+        post
+        |> Ecto.assoc(:author)
+        |> Repo.one
+
+      {:ok, author}
     end
   end
 end
 
 query do
-  field :categories, list_of(:category) do
+  field :posts, list_of(:post) do
     resolve fn _, _ ->
-      Category |> Repo.all
+      {:ok, Post |> Repo.all}
     end
   end
 end
@@ -52,63 +55,80 @@ end
 
 What this schema will do when presented with the GraphQL query is
 run `Category |> Repo.all`, which will retrieve _N_ categories. Then for each
-_N_ category it will resolve child fields, which runs our `query_parent(category)`
+_N_ category it will resolve child fields, which runs our `Repo.one` query
 function, resulting in _N+1_ calls to the database.
 
-Instead, structure your schema in such a way that you can preload all desired
-data:
+Instead, use batching! At the moment (Oct-31-2016) Batching is pretty new, so we
+don't yet have some of the helper functions we want to in order to make this easier.
+
+Fortunately the batching API is pretty simple. The idea with batching is that we're
+gonna aggregate all the `author_id`s from each post, and then make one call to the user.
+
+Let's first make a function to get a model by ids.
 
 ```elixir
-# description: Always preloading the parent.
-object :category do
-  @desc "Parent category to the existing category"
-  field :parent, :category
+defmodule MyApp.Schema.Helpers do
+  def by_id(model, ids) do
+    import Ecto.Query
+    model
+    |> where([m], m.id in ^ids)
+    |> Repo.all
+    |> Map.new(&{&1.id, &1})
+  end
 end
+```
 
-query do
-  field :categories, list_of(:category) do
-    resolve fn _, _ ->
-      Category
-      |> Ecto.Query.preload(:parent)
-      |> Repo.all
+Now we can use this function to batch our author lookups:
+
+```elixir
+# description: Batch loading users.
+object :post do
+  @desc "Author of the post"
+  field :author, :user do
+    resolve fn post, _, _ ->
+      batch({MyApp.Schema.Helpers, :by_id, User}, post.author_id, fn batch_results ->
+        {:ok, Map.get(batch_results, post.author_id)}
+      end)
     end
   end
 end
 ```
 
-Now we always make 2 calls to the database; once to load all queries, and then
-a second time to handle the preload.
+Now we make just two calls to the database. The first call loads all of the posts.
+Then as Absinthe walks through each post and tries to get the author, it's instead
+told to aggregate its information.
 
-Astute readers will note that there's a downside here. We load the parent from
-the database regardless of whether the GraphQL query asks for it (and,
-therefore, regardless of whether Absinthe will return it in the response).
+That aggregate information is passed on to our `by_id/2` function from earlier.
+It grabs ALL the users in just one database call, and creates a map of user ids
+to users.
 
-It'd be nice if we could only query the database when the parent is asked for.
+Absinthe then does a second pass and calls the `batch_results` function with that
+map, letting us retrieve the individual author for each post.
 
-## It's DIY (For Now)
+Not only is this a very efficient way to query the data, it's also 100% dynamic.
+If a query document asks for authors, they're loaded efficiently. If it does not,
+they aren't loaded at all.
 
-Supporting this feature more automatically is on the [roadmap](/roadmap), but
-here's the approach:
+See FIXME link
+
+## The Future
+
+The `batch` API above is a bit verbose. This verbosity happens because it's very
+generic, so you gotta give it the individual bits and pieces. However for Ecto
+associations specifically, you can easily see how the code we have above could be
+made more succinct by using information we already have on our Ecto schemas.
+
+Thus what we hope to have soon in Absinthe.Ecto (doesn't exist yet) are functions
+that let you do something like:
 
 ```elixir
-# description: The sneaky approach. Coming soon!
-query do
-  field :categories, list_of(:category) do
-    resolve fn _, info ->
-      preloads = derive_preloads(info)
-      Category
-      |> Ecto.Query.preload(^preloads)
-      |> Repo.all
-    end
-  end
+object :post do
+  field :name, :string
+  field :author, :user, resolve: belongs_to(User, :author)
+  field :comments, list_of(:comment), resolve: has_many(Comment)
 end
 ```
 
-In this example, `derive_preloads/1` takes the second argument to the resolver
-(a [Absinthe.Execution.Field](https://hexdocs.pm/absinthe/Absinthe.Execution.Field.html)
-struct), which contains the current `ast_node` -- using this, we can peek ahead
-and see what child fields will be asked for, then return the preloads that are
-actually needed.
-
-Sounds simple, right? The devil is in the details, but we hope to be able to
-release this soon as part of a new `Absinthe.Ecto` project.
+This `belongs_to` function would derive the right batching approach based on the
+Ecto association. These functions are mere conveniences. Everything they would do
+functionally is available to you today!

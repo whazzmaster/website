@@ -1,6 +1,6 @@
 ---
 title: Complex Arguments
-order: 7
+order: 6
 ---
 
 In preparation for supporting comments on our blog, let's create users. We're building

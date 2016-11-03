@@ -18,7 +18,7 @@ Here's a simple scalar definition:
 
 ```elixir
 scalar :time, description: "ISOz time" do
-  parse &Timex.DateFormat.parse(&1, "{ISOz}")
+  parse &Timex.DateFormat.parse(&1.value, "{ISOz}")
   serialize &Timex.DateFormat.format!(&1, "{ISOz}")
 end
 ```
@@ -33,17 +33,17 @@ structs.
  `:name` option. In this example, our scalar type is automatically assigned `Time`).
  </p>
 
-This method of definining scalars isn't anything special, either. It's exactly
+This method of defining scalars isn't anything special, either. It's exactly
 how the built-in scalars `Int`, `String`, `Float`, `ID`, and `Boolean` are defined.
 
 ### The parse function
 
-The function provided to `parse` takes the raw value from GraphQL and returns a
+The function provided to `parse` takes the blueprint node from Absinthe and returns a
 tuple -- either `{:ok, value}` or `{:error, reason}`. Any errors during parsing
 will be returned to the user as part of the response.
 
 In the `:time` example above, `Timex.DateFormat.parse/2` handles this for us; we
-just wrap it and provide the date format (`ISOz').
+just wrap it and provide the date format (`ISOz`).
 
 ### The serialize function
 
@@ -65,7 +65,7 @@ datetime format (that is, the ISO 8601 format without the timezone offset, eg,
 "2015-06-24T04:50:34Z").
 """
 scalar :time, description: "ISOz time" do
-  parse &Timex.DateFormat.parse(&1, "{ISOz}")
+  parse &Timex.DateFormat.parse(&1.value, "{ISOz}")
   serialize &Timex.DateFormat.format!(&1, "{ISOz}")
 end
 ```

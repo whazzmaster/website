@@ -104,5 +104,5 @@ That's it! We're running GraphQL.
 
 Using `Absinthe.Plug` in your router ensures that your schema is type
 checked at compile time. This means that if you misspell a type and do
-`list_of(:pots)` you'll be notified that the type you reference in
+`list_of(:posts)` you'll be notified that the type you reference in
 your schema doesn't exist.
