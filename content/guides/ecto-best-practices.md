@@ -54,8 +54,8 @@ end
 ```
 
 What this schema will do when presented with the GraphQL query is
-run `Category |> Repo.all`, which will retrieve _N_ categories. Then for each
-_N_ category it will resolve child fields, which runs our `Repo.one` query
+run `Post |> Repo.all`, which will retrieve _N_ posts. Then for each
+post it will resolve child fields, which runs our `Repo.one` query
 function, resulting in _N+1_ calls to the database.
 
 Instead, use batching! At the moment (Oct-31-2016) Batching is pretty new, so we
