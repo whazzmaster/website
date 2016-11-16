@@ -98,7 +98,11 @@ out to some unspecified authentication mechanism.
 ```elixir
 defmodule MyApp.Web.Context do
   @behaviour Plug
+
   import Plug.Conn
+  import Ecto.Query, only: [where: 2]
+
+  alias MyApp.{Repo, User}
 
   def init(opts), do: opts
 
@@ -107,9 +111,13 @@ defmodule MyApp.Web.Context do
       {:ok, context} ->
         put_private(conn, :absinthe, %{context: context})
       {:error, reason} ->
-        send_resp(conn, 403, reason)
+        conn
+        |> send_resp(403, reason)
+        |> halt()
       _ ->
-        send_resp(conn, 400, reason)
+        conn
+        |> send_resp(400, "Bad Request")
+        |> halt()
     end
   end
 
