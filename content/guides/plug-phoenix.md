@@ -30,8 +30,7 @@ you should plug Absinthe.Plug after Plug.Parsers.
 
 ```elixir
 plug Plug.Parsers,
-  parsers: [:urlencoded, :multipart, :json],
-  pass: ["*/*"],
+  parsers: [:urlencoded, :multipart, :json, Absinthe.Plug.Parser],
   json_decoder: Poison
 
 plug Absinthe.Plug,
