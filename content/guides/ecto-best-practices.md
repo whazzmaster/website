@@ -70,6 +70,9 @@ Let's first make a function to get a model by ids.
 defmodule MyApp.Schema.Helpers do
   def by_id(model, ids) do
     import Ecto.Query
+
+    ids = ids |> Enum.uniq
+
     model
     |> where([m], m.id in ^ids)
     |> Repo.all
