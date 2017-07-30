@@ -133,7 +133,7 @@ defmodule MyApp.Web.Context do
 
   defp authorize(token) do
     User
-    |> where(token: token)
+    |> where(token: ^token)
     |> Repo.one
     |> case do
       nil -> {:error, "invalid authorization token"}
