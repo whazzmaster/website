@@ -304,16 +304,16 @@ One of the more popular features of Relay is the rich pagination support provide
 connections. [This medium post](https://dev-blog.apollodata.com/explaining-graphql-connections-c48b7c3d6976)
 has a good explaination of the full feature set and nomenclature.
 
-You can create a connection type to paginate by with:
+For example, you could define a connection for paginating `:location` objects with:
 
 `connection node_type: :location`
 
 This will automatically define two new types: `:location_connection` and `:location_edge`.
 
-We define a field that uses these types to paginate associated records by using 
+We define a field that uses these types to paginate associated records by using
 `connection field`. Here, for instance, we support paginating a business’s locations:
 
-```
+```elixir
 # description: somewhere in types.ex
 
 object :business do
@@ -334,13 +334,13 @@ We are piping a query for the associated locations into `from_query/3` along wit
 relay pagination arguments that allow for pagination. For example, to get just the first 10
 locations, use the `first` argument:
 
-```
-query{
-  business(id:"9ea6605e-e6c8-44ea-98d0-1fe6276e193d"){
+```graphql
+query {
+  business(id:"9ea6605e-e6c8-44ea-98d0-1fe6276e193d") {
     shortName
-    locations(first:10){
-      edges{
-        node{
+    locations(first:10) {
+      edges
+        node {
           address1
           city
         }
@@ -349,7 +349,7 @@ query{
   }
 }
 ```
-    
+
 Check the [documentation](https://hexdocs.pm/absinthe_relay/Absinthe.Relay.Connection.html)
 for more details on connections.
 
