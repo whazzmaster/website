@@ -17,14 +17,21 @@ providing `parse` and `serialize` functions.
 Here's a simple scalar definition:
 
 ```elixir
-scalar :time, description: "ISOz time" do
-  parse &Timex.DateFormat.parse(&1.value, "{ISOz}")
-  serialize &Timex.DateFormat.format!(&1, "{ISOz}")
+scalar :date, description: "ISO8601 time" do
+  parse &parse_date(&1.value)
+  serialize &DateTime.to_string(&1)
+end
+
+def parse_date(value) do
+  case DateTime.from_iso8601(value) do
+    {:ok, val, _} -> {:ok, val}
+    {:error, _} -> :error
+  end
 end
 ```
 
-This creates a new scalar type, `:time` that converts between external string
-times in ISOz format and internal [Timex](https://github.com/bitwalker/timex)
+This creates a new scalar type, `:date` that converts between external string
+times in ISO8601 format and internal [DateTime](https://hexdocs.pm/elixir/DateTime.html#t:t/0)
 structs.
 
 <p class="notice">
@@ -39,18 +46,18 @@ how the built-in scalars `Int`, `String`, `Float`, `ID`, and `Boolean` are defin
 ### The parse function
 
 The function provided to `parse` takes the blueprint node from Absinthe and returns a
-tuple -- either `{:ok, value}` or `{:error, reason}`. Any errors during parsing
+tuple -- either `{:ok, value}` or `:error`. Any errors during parsing
 will be returned to the user as part of the response.
 
-In the `:time` example above, `Timex.DateFormat.parse/2` handles this for us; we
-just wrap it and provide the date format (`ISOz`).
+In the `:date` example above, we're wrapping `DateTime.from_iso8601/1` in the `parse_date/1`
+function to get the right return values.
 
 ### The serialize function
 
 The function provided to `serialize` takes the internal value and serializes it
 to the type that will be inserted into the result.
 
-In the `:time` example above, `Time.DateFormat.format!` handles us for this,
+In the `:date` example above, `DateTime.to_string/1` handles this for us,
 serializing it to the same format that `parse` expects as input.
 
 ### Don't forget your description
@@ -60,13 +67,19 @@ with the constraints your `parse` function may place on incoming values.
 
 ```elixir
 @desc """
-The `Time` scalar type represents time values provided in the ISOz
-datetime format (that is, the ISO 8601 format without the timezone offset, eg,
-"2015-06-24T04:50:34Z").
+The `Date` scalar type represents time values provided in the ISO8601
+datetime format (e.g. "2015-06-24T04:50:34Z").
 """
-scalar :time, description: "ISOz time" do
-  parse &Timex.DateFormat.parse(&1.value, "{ISOz}")
-  serialize &Timex.DateFormat.format!(&1, "{ISOz}")
+scalar :date, description: "ISO8601 time" do
+  parse &parse_date(&1.value)
+  serialize &DateTime.to_string(&1)
+end
+
+def parse_date(value) do
+  case DateTime.from_iso8601(value) do
+    {:ok, val, _} -> {:ok, val}
+    {:error, _} -> :error
+  end
 end
 ```
 
