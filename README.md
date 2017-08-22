@@ -38,5 +38,5 @@ git push origin master
 ```
 
 Then, check out
- http://absinthe-graphql.org/ ]( http://absinthe-graphql.org/ )
+ [ http://absinthe-graphql.org/ ]( http://absinthe-graphql.org/ )
 and make sure you haven't screwed anything up. :-)
