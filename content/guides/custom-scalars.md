@@ -9,6 +9,12 @@ its object types, but is present all the way down to the scalar value level.
 Sometimes it makes sense to build custom scalar types to better model your
 domain. Here's how to do it.
 
+<p class="warning">
+  For this example, we'll be building a date-related scalar. In practice, you probably
+  want to use one of the already-created date and time scalars that ship with Absinthe as part of
+  <a href="https://hexdocs.pm/absinthe/Absinthe.Type.Custom.html#content"><code>Absinthe.Type.Custom</code></a>
+</p>
+
 ## Defining a scalar
 
 Supporting additional scalar types is as easy as using the `scalar` macro and
@@ -37,7 +43,7 @@ structs.
 <p class="notice">
  By default, types defined in Absinthe schemas are automatically given TitleCased
  names for use in GraphQL documents. To give a type a custom name, pass a
- `:name` option. In this example, our scalar type is automatically assigned `Time`).
+ <code>:name</code> option. In this example, our scalar type is automatically assigned <code>Time</code>).
  </p>
 
 This method of defining scalars isn't anything special, either. It's exactly
