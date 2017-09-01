@@ -31,8 +31,8 @@ Let's define our time type:
 # filename: web/schema/types.ex
 
 scalar :time, description: "ISOz time" do
-  parse &Timex.DateFormat.parse(&1.value, "{ISOz}")
-  serialize &Timex.DateFormat.format!(&1, "{ISOz}")
+  parse &Timex.parse(&1.value, "{ISO:Extended:Z}")
+  serialize &Timex.format!(&1, "{ISO:Extended:Z}")
 end
 ```
 
